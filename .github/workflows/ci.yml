@@ -30,3 +30,12 @@ jobs:
         run: uv run --frozen --extra test pytest
       - name: Build distributions
         run: uv build
+      - name: Validate AUR package template
+        if: matrix.python-version == '3.13'
+        run: |
+          sed \
+            -e 's/@PKGVER@/0.0.0/' \
+            -e 's/@SHA256@/0000000000000000000000000000000000000000000000000000000000000000/' \
+            packaging/aur/PKGBUILD.template > /tmp/PKGBUILD
+          ! grep -q '@PKGVER@\|@SHA256@' /tmp/PKGBUILD
+          bash -n /tmp/PKGBUILD

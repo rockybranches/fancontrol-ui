@@ -1,0 +1,98 @@
+name: Publish to AUR
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        description: Release tag, in the form v1.2.3
+        required: true
+        type: string
+    secrets:
+      AUR_SSH_PRIVATE_KEY:
+        required: true
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Existing release tag to publish, in the form v1.2.3
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aur-publication
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    container: archlinux:base-devel
+    timeout-minutes: 15
+
+    steps:
+      - name: Install publication tools
+        run: pacman --noconfirm --needed -Syu git openssh python curl
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.version }}
+      - name: Verify release version
+        env:
+          RELEASE_TAG: ${{ inputs.version }}
+        run: |
+          case "$RELEASE_TAG" in
+            v[0-9]*) ;;
+            *) echo "::error::Version must be a tag in the form v1.2.3"; exit 1 ;;
+          esac
+          version="${RELEASE_TAG#v}"
+          package_version="$(python -c \
+            "import tomllib; print(tomllib.load(open('pyproject.toml', 'rb'))['project']['version'])")"
+          test "$version" = "$package_version"
+          echo "PACKAGE_VERSION=$version" >> "$GITHUB_ENV"
+      - name: Generate AUR metadata
+        run: |
+          source_url="https://github.com/rockybranches/fancontrol-ui/archive/refs/tags/v${PACKAGE_VERSION}.tar.gz"
+          curl --fail --location --retry 3 --output /tmp/source.tar.gz "$source_url"
+          tar -tzf /tmp/source.tar.gz |
+            grep -q "/packaging/linux/io.github.rockybranches.fancontrol-ui.desktop$"
+          tar -tzf /tmp/source.tar.gz |
+            grep -q "/packaging/linux/io.github.rockybranches.fancontrol-ui.svg$"
+          checksum="$(sha256sum /tmp/source.tar.gz | cut -d' ' -f1)"
+          mkdir aur-package
+          sed \
+            -e "s/@PKGVER@/${PACKAGE_VERSION}/" \
+            -e "s/@SHA256@/${checksum}/" \
+            packaging/aur/PKGBUILD.template > aur-package/PKGBUILD
+          ! grep -q '@PKGVER@\|@SHA256@' aur-package/PKGBUILD
+          useradd --create-home builder
+          chown -R builder:builder aur-package
+          runuser -u builder -- sh -c \
+            'cd "$1" && makepkg --verifysource' sh "$PWD/aur-package"
+          runuser -u builder -- sh -c \
+            'cd "$1" && makepkg --printsrcinfo > .SRCINFO' sh "$PWD/aur-package"
+      - name: Configure AUR authentication
+        env:
+          AUR_SSH_PRIVATE_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+        run: |
+          test -n "$AUR_SSH_PRIVATE_KEY"
+          install -d -m 700 "$HOME/.ssh"
+          printf '%s\n' "$AUR_SSH_PRIVATE_KEY" > "$HOME/.ssh/id_ed25519"
+          chmod 600 "$HOME/.ssh/id_ed25519"
+          ssh-keyscan -t ed25519 aur.archlinux.org 2>/dev/null > "$HOME/.ssh/known_hosts"
+          fingerprint="$(ssh-keygen -lf "$HOME/.ssh/known_hosts" -E sha256 | awk '{print $2}')"
+          test "$fingerprint" = "SHA256:RFzBCUItH9LZS0cKB5UE6ceAYhBD5C8GeOBip8Z11+4"
+      - name: Publish AUR package
+        run: |
+          git -c init.defaultBranch=master clone \
+            ssh://aur@aur.archlinux.org/fancontrol-ui.git /tmp/fancontrol-ui-aur
+          cp aur-package/PKGBUILD aur-package/.SRCINFO /tmp/fancontrol-ui-aur/
+          cd /tmp/fancontrol-ui-aur
+          git config user.name "RockyBranches"
+          git config user.email "rockybranches@users.noreply.github.com"
+          git add PKGBUILD .SRCINFO
+          if git diff --cached --quiet; then
+            echo "AUR package is already current."
+            exit 0
+          fi
+          git commit -m "Update to ${PACKAGE_VERSION}"
+          git push origin HEAD:master

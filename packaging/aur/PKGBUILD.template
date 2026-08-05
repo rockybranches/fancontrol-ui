@@ -1,0 +1,30 @@
+# Maintainer: RockyBranches <rockybranches at users dot noreply dot github dot com>
+
+pkgname=fancontrol-ui
+pkgver=@PKGVER@
+pkgrel=1
+pkgdesc="Monitor and control Linux hwmon fans with a PyQt6 desktop interface"
+arch=('any')
+url="https://github.com/rockybranches/fancontrol-ui"
+license=('MIT')
+depends=('python' 'python-pyqt6')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('@SHA256@')
+
+build() {
+  cd "$pkgname-$pkgver"
+  python -m build --wheel --no-isolation
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  python -m installer --destdir="$pkgdir" dist/*.whl
+  install -Dm644 \
+    packaging/linux/io.github.rockybranches.fancontrol-ui.desktop \
+    "$pkgdir/usr/share/applications/io.github.rockybranches.fancontrol-ui.desktop"
+  install -Dm644 \
+    packaging/linux/io.github.rockybranches.fancontrol-ui.svg \
+    "$pkgdir/usr/share/icons/hicolor/scalable/apps/io.github.rockybranches.fancontrol-ui.svg"
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
