@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-08-04
+
 ### Added
 
 - Arch Linux desktop integration and automated AUR publication
@@ -29,4 +31,5 @@ All notable changes to this project are documented here.
 - GitHub Actions continuous integration and release automation
 
 [0.1.0]: https://github.com/rockybranches/fancontrol-ui/releases/tag/v0.1.0
-[Unreleased]: https://github.com/rockybranches/fancontrol-ui/compare/v0.1.0...HEAD
+[0.2.0]: https://github.com/rockybranches/fancontrol-ui/compare/v0.1.0...v0.2.0
+[Unreleased]: https://github.com/rockybranches/fancontrol-ui/compare/v0.2.0...HEAD
