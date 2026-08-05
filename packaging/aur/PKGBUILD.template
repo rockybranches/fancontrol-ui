@@ -26,5 +26,7 @@ package() {
   install -Dm644 \
     packaging/linux/io.github.rockybranches.fancontrol-ui.svg \
     "$pkgdir/usr/share/icons/hicolor/scalable/apps/io.github.rockybranches.fancontrol-ui.svg"
+  install -Dm644 60-fan-control.rules \
+    "$pkgdir/usr/lib/udev/rules.d/60-fan-control.rules"
   install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }

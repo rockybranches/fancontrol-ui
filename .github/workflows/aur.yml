@@ -57,6 +57,8 @@ jobs:
             grep -q "/packaging/linux/io.github.rockybranches.fancontrol-ui.desktop$"
           tar -tzf /tmp/source.tar.gz |
             grep -q "/packaging/linux/io.github.rockybranches.fancontrol-ui.svg$"
+          tar -tzf /tmp/source.tar.gz |
+            grep -q "/60-fan-control.rules$"
           checksum="$(sha256sum /tmp/source.tar.gz | cut -d' ' -f1)"
           mkdir aur-package
           sed \
