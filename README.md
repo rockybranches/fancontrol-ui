@@ -1,21 +1,32 @@
 # Fan Control UI
 
-A small PyQt6 application for controlling fan speeds exposed through Linux's
-`hwmon` PWM interface.
+A small PyQt6 application for monitoring and configuring fan endpoints exposed
+through Linux's `hwmon` interface.
 
 ## Features
 
-- Automatically discovers available Linux PWM fan controls
+- Discovers fan endpoints from RPM, PWM, mode, and fan configuration files
 - Shows fan labels, current speed percentages, and RPM readings when available
 - Applies manual fan speeds from 0% to 100%
 - Returns supported channels to the driver's automatic control mode
+- Configures exposed minimum, maximum, and target RPM values, pulses per
+  revolution, fan enablement, and tachometer divisors, including on channels
+  without PWM control
+- Shows RPM-only channels as clearly identified monitoring-only rows
+- Maps hwmon controllers to their temperature sensors and fan channels in an
+  interactive topology diagram
+- Samples temperatures, PWM percentages, and available RPM readings every
+  second, with an in-memory 10-minute history graph
+- Shows controller, sensor, and fan capability details when a topology node is
+  selected
 - Reports device, data, and permission errors in the interface
 
 ## Requirements
 
-- Linux with one or more `pwmN` controls under `/sys/class/hwmon`
+- Linux with one or more fan-related `fanN_*` or `pwmN*` files under
+  `/sys/class/hwmon`
 - Python 3.10 or newer
-- Permission to write the relevant `pwmN` and `pwmN_enable` files
+- Permission to write any exposed settings you want to change
 
 ## Install and run
 
@@ -26,9 +37,15 @@ python -m pip install .
 fancontrol-ui
 ```
 
-The app discovers available PWM channels at startup. Move a slider and release
-it to apply a speed from 0% to 100%. **Automatic** returns a channel to the
-driver's automatic mode, and **Refresh** rescans connected hardware.
+The app discovers available fan endpoints at startup. When PWM is available,
+move a slider and release it to apply a speed from 0% to 100%. **Automatic**
+returns channels with `pwmN_enable` to the driver's conventional automatic mode.
+Other exposed fan settings use an explicit **Apply** button. **Refresh** rescans
+connected hardware. Open the **Analysis** tab to select hardware nodes, inspect
+live values and capabilities, and view up to 600 recent samples per telemetry
+series. Select PWM or RPM history when both are available. RPM-only fan history
+is supported, and read failures are shown on the selected node without stopping
+other telemetry.
 
 Hardware monitoring files are commonly writable only by root. Prefer a
 device-specific udev rule or system service that grants narrowly scoped access.
