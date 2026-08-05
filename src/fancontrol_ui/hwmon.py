@@ -50,15 +50,36 @@ class FanChannel:
             return None
         return _read_int(rpm_path)
 
+    def read_mode(self) -> int | None:
+        if self.enable_path is None:
+            return None
+        return _read_int(self.enable_path)
+
     def set_percent(self, percent: int) -> None:
         if not 0 <= percent <= 100:
             raise ValueError("Fan speed must be between 0 and 100 percent")
 
+        previous_mode = self.read_mode()
         if self.enable_path is not None:
             self._write(self.enable_path, 1)
 
         raw_value = round(percent * self.maximum / 100)
-        self._write(self.pwm_path, raw_value)
+        try:
+            self._write(self.pwm_path, raw_value)
+        except FanControlError as write_error:
+            if self.enable_path is not None and previous_mode not in (None, 1):
+                try:
+                    self._write(self.enable_path, previous_mode)
+                except FanControlError as restore_error:
+                    raise FanControlError(
+                        f"{write_error}; also failed to restore mode {previous_mode}: {restore_error}"
+                    ) from write_error
+            raise
+
+    def set_automatic(self) -> None:
+        if self.enable_path is None:
+            raise FanControlError(f"{self.display_name} does not expose an automatic mode control")
+        self._write(self.enable_path, 2)
 
     @staticmethod
     def _write(path: Path, value: int) -> None:
@@ -105,7 +126,7 @@ def discover_fans(hwmon_root: Path = Path("/sys/class/hwmon")) -> list[FanChanne
                 )
             )
 
-    return fans
+    return sorted(fans, key=lambda fan: (fan.chip.casefold(), fan.index))
 
 
 def _find_label(device_path: Path, index: int) -> str | None:
@@ -116,4 +137,3 @@ def _find_label(device_path: Path, index: int) -> str | None:
             if label:
                 return label
     return None
-

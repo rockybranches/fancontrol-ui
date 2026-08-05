@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from collections.abc import Callable
+
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
     QFrame,
@@ -17,8 +19,9 @@ from fancontrol_ui.hwmon import FanChannel, FanControlError, discover_fans
 
 
 class FanControlWindow(QMainWindow):
-    def __init__(self) -> None:
+    def __init__(self, discover: Callable[[], list[FanChannel]] = discover_fans) -> None:
         super().__init__()
+        self._discover = discover
         self.setWindowTitle("Fan Control")
         self.setMinimumSize(520, 280)
 
@@ -59,7 +62,7 @@ class FanControlWindow(QMainWindow):
                 item.widget().deleteLater()
 
         try:
-            fans = discover_fans()
+            fans = self._discover()
         except FanControlError as exc:
             self._set_error(str(exc))
             return
@@ -80,6 +83,7 @@ class FanControlWindow(QMainWindow):
         row = QFrame()
         row.setFrameShape(QFrame.Shape.StyledPanel)
         layout = QVBoxLayout(row)
+        control_id = f"{fan.pwm_path.parent.name}-{fan.index}"
 
         heading = QHBoxLayout()
         name = QLabel(fan.display_name)
@@ -92,11 +96,17 @@ class FanControlWindow(QMainWindow):
 
         controls = QHBoxLayout()
         slider = QSlider(Qt.Orientation.Horizontal)
+        slider.setObjectName(f"fan-{control_id}-slider")
         slider.setRange(0, 100)
         slider.setSingleStep(1)
         slider.setPageStep(5)
         value_label = QLabel()
+        value_label.setObjectName(f"fan-{control_id}-value")
         value_label.setMinimumWidth(44)
+        automatic_button = QPushButton("Automatic")
+        automatic_button.setObjectName(f"fan-{control_id}-automatic")
+        automatic_button.setEnabled(fan.enable_path is not None)
+        automatic_button.setToolTip("Return this fan to the driver's automatic control mode")
 
         try:
             value = fan.read_percent()
@@ -112,8 +122,10 @@ class FanControlWindow(QMainWindow):
 
         slider.valueChanged.connect(lambda value, label=value_label: label.setText(f"{value}%"))
         slider.sliderReleased.connect(lambda current=slider, channel=fan: self._apply(channel, current.value()))
+        automatic_button.clicked.connect(lambda _checked=False, channel=fan: self._set_automatic(channel))
         controls.addWidget(slider)
         controls.addWidget(value_label)
+        controls.addWidget(automatic_button)
         layout.addLayout(controls)
         return row
 
@@ -127,7 +139,16 @@ class FanControlWindow(QMainWindow):
         self._status.setStyleSheet("color: #287a28;")
         self._status.setText(f"Set {fan.display_name} to {percent}%.")
 
+    def _set_automatic(self, fan: FanChannel) -> None:
+        try:
+            fan.set_automatic()
+        except FanControlError as exc:
+            self._set_error(str(exc))
+            return
+
+        self._status.setStyleSheet("color: #287a28;")
+        self._status.setText(f"Returned {fan.display_name} to automatic control.")
+
     def _set_error(self, message: str) -> None:
         self._status.setStyleSheet("color: #b42318;")
         self._status.setText(message)
-

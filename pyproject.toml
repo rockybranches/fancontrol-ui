@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=69"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -8,8 +8,28 @@ version = "0.1.0"
 description = "A simple PyQt interface for controlling Linux hwmon fan speeds"
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "MIT" }
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "RockyBranches" }]
+keywords = ["fan", "fan-control", "hwmon", "linux", "pyqt"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: X11 Applications :: Qt",
+    "Intended Audience :: End Users/Desktop",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: System :: Hardware",
+]
 dependencies = ["PyQt6>=6.6"]
+
+[project.urls]
+Homepage = "https://github.com/rockybranches/fancontrol-ui"
+Issues = "https://github.com/rockybranches/fancontrol-ui/issues"
+Repository = "https://github.com/rockybranches/fancontrol-ui"
 
 [project.optional-dependencies]
 test = ["pytest>=8"]
@@ -23,4 +43,3 @@ where = ["src"]
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]
-
