@@ -17,6 +17,8 @@ jobs:
       - uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
+      - name: Install Qt runtime library
+        run: sudo apt-get update && sudo apt-get install --yes libegl1
       - name: Verify tag matches package version
         run: |
           package_version="$(uv run --no-project python -c \
