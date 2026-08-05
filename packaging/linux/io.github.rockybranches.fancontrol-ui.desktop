@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Fan Control UI
+Comment=Monitor and control Linux hardware fans
+Exec=fancontrol-ui
+Icon=io.github.rockybranches.fancontrol-ui
+Terminal=false
+Categories=System;Monitor;
+Keywords=fan;cooling;hardware;hwmon;temperature;
+StartupNotify=true

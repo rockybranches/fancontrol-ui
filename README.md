@@ -30,6 +30,14 @@ through Linux's `hwmon` interface.
 
 ## Install and run
 
+On Arch Linux, install the AUR package with an AUR helper:
+
+```bash
+paru -S fancontrol-ui
+```
+
+For a distribution-independent installation from source:
+
 ```bash
 python -m venv .venv
 . .venv/bin/activate
@@ -58,9 +66,14 @@ Running the entire graphical application as root is not recommended.
 ## Development
 
 ```bash
-python -m pip install -e '.[test]'
-QT_QPA_PLATFORM=offscreen pytest
+uv sync --extra test
+QT_QPA_PLATFORM=offscreen uv run --frozen --extra test pytest
+uv build
 ```
+
+Python 3.10 through 3.13 are tested in CI. See
+[`packaging/aur/README.md`](packaging/aur/README.md) for AUR release setup and
+manual package validation.
 
 ## License
 
