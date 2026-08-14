@@ -30,7 +30,9 @@ through Linux's `hwmon` interface.
 
 ## Install and run
 
-On Arch Linux, install the AUR package with an AUR helper:
+On Arch Linux, install the
+[`fancontrol-ui` AUR package](https://aur.archlinux.org/packages/fancontrol-ui)
+with an AUR helper:
 
 ```bash
 paru -S fancontrol-ui
@@ -66,14 +68,20 @@ Running the entire graphical application as root is not recommended.
 ## Development
 
 ```bash
-uv sync --extra test
+uv sync --extra test --extra docs
 QT_QPA_PLATFORM=offscreen uv run --frozen --extra test pytest
+uv run --frozen --extra docs mkdocs build --strict
 uv build
 ```
 
-Python 3.10 through 3.13 are tested in CI. See
-[`packaging/aur/README.md`](packaging/aur/README.md) for AUR release setup and
-manual package validation.
+Python 3.10 through 3.13 are tested in CI. The
+[project documentation](https://rockybranches.github.io/fancontrol-ui/)
+includes complete
+[installation](https://rockybranches.github.io/fancontrol-ui/installation/),
+[development](https://rockybranches.github.io/fancontrol-ui/development/), and
+[AUR packaging](https://rockybranches.github.io/fancontrol-ui/aur-packaging/)
+guides. The documentation can be previewed locally with
+`uv run --extra docs mkdocs serve`.
 
 ## License
 

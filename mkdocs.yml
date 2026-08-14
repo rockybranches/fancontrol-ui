@@ -1,0 +1,30 @@
+site_name: Fan Control UI
+site_description: Monitor and control Linux hwmon fans with a PyQt6 desktop interface
+site_url: https://rockybranches.github.io/fancontrol-ui/
+repo_url: https://github.com/rockybranches/fancontrol-ui
+repo_name: rockybranches/fancontrol-ui
+edit_uri: edit/main/docs/
+
+theme:
+  name: readthedocs
+  highlightjs: true
+  hljs_languages:
+    - bash
+    - python
+
+nav:
+  - Home: index.md
+  - Installation: installation.md
+  - Development: development.md
+  - AUR packaging: aur-packaging.md
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - fenced_code
+  - tables
+  - toc:
+      permalink: true
+
+strict: true

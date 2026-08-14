@@ -1,5 +1,9 @@
 # AUR publication
 
+User installation instructions and the complete maintainer workflow are in the
+[AUR packaging guide](../../docs/aur-packaging.md). This file documents the
+repository-specific publication setup.
+
 Tagged releases publish `fancontrol-ui` to the Arch User Repository after the
 GitHub release succeeds. The workflow downloads the immutable GitHub tag
 archive, calculates its SHA-256 checksum, renders `PKGBUILD`, generates

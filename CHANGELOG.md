@@ -4,6 +4,11 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Added
+
+- MkDocs configuration and rendered installation, development, and AUR
+  packaging guides
+
 ## [0.2.0] - 2026-08-04
 
 ### Added

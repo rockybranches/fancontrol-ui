@@ -31,10 +31,12 @@ dependencies = ["PyQt6>=6.6"]
 [project.urls]
 Homepage = "https://github.com/rockybranches/fancontrol-ui"
 Changelog = "https://github.com/rockybranches/fancontrol-ui/blob/main/CHANGELOG.md"
+Documentation = "https://rockybranches.github.io/fancontrol-ui/"
 Issues = "https://github.com/rockybranches/fancontrol-ui/issues"
 Repository = "https://github.com/rockybranches/fancontrol-ui"
 
 [project.optional-dependencies]
+docs = ["mkdocs>=1.6,<2"]
 test = ["pytest>=8"]
 
 [project.scripts]
