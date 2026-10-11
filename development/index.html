@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://rockybranches.github.io/fancontrol-ui/development/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Development - Fan Control UI</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Development";
+        var mkdocs_page_input_path = "development.md";
+        var mkdocs_page_url = "/fancontrol-ui/development/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/bash.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> Fan Control UI
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Development</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#set-up-a-checkout">Set up a checkout</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#tests-and-distributions">Tests and distributions</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#project-structure">Project structure</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../aur-packaging/">AUR packaging</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">Fan Control UI</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Development</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/rockybranches/fancontrol-ui/edit/main/docs/development.md">Edit on rockybranches/fancontrol-ui</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="development">Development<a class="headerlink" href="#development" title="Permanent link">&para;</a></h1>
+<p>The project supports Python 3.10 through 3.13 and uses the locked
+<a href="https://docs.astral.sh/uv/"><code>uv</code></a> environment in CI.</p>
+<h2 id="set-up-a-checkout">Set up a checkout<a class="headerlink" href="#set-up-a-checkout" title="Permanent link">&para;</a></h2>
+<p>Install the development dependencies:</p>
+<pre><code class="language-bash">git clone https://github.com/rockybranches/fancontrol-ui.git
+cd fancontrol-ui
+uv sync --extra test --extra docs
+</code></pre>
+<p>Run the application directly from the checkout:</p>
+<pre><code class="language-bash">uv run fancontrol-ui
+</code></pre>
+<p>The equivalent module entry point is <code>uv run python -m fancontrol_ui</code>.</p>
+<h2 id="tests-and-distributions">Tests and distributions<a class="headerlink" href="#tests-and-distributions" title="Permanent link">&para;</a></h2>
+<p>Run the full test suite headlessly:</p>
+<pre><code class="language-bash">QT_QPA_PLATFORM=offscreen uv run --frozen --extra test pytest
+</code></pre>
+<p>Run a single test by node ID:</p>
+<pre><code class="language-bash">QT_QPA_PLATFORM=offscreen uv run --frozen --extra test \
+  pytest tests/test_hwmon.py::test_set_percent_enables_manual_mode
+</code></pre>
+<p>Build the wheel and source distribution:</p>
+<pre><code class="language-bash">uv build
+</code></pre>
+<h2 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h2>
+<p>Preview the documentation with live reload:</p>
+<pre><code class="language-bash">uv run --frozen --extra docs mkdocs serve
+</code></pre>
+<p>Build it with the same strict link and configuration checks used by CI:</p>
+<pre><code class="language-bash">uv run --frozen --extra docs mkdocs build --strict
+</code></pre>
+<p>Documentation source belongs in <code>docs/</code>. Add new pages to <code>nav</code> in
+<code>mkdocs.yml</code> so they appear in the rendered site.</p>
+<h2 id="project-structure">Project structure<a class="headerlink" href="#project-structure" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Responsibility</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>src/fancontrol_ui/hwmon.py</code></td>
+<td>Hardware discovery, sysfs access, conversions, and writes</td>
+</tr>
+<tr>
+<td><code>src/fancontrol_ui/window.py</code></td>
+<td>PyQt6 controls, analysis views, and telemetry polling</td>
+</tr>
+<tr>
+<td><code>src/fancontrol_ui/main.py</code></td>
+<td>Application and window entry point</td>
+</tr>
+<tr>
+<td><code>tests/</code></td>
+<td>Hardware-domain and headless Qt tests</td>
+</tr>
+<tr>
+<td><code>packaging/</code></td>
+<td>Desktop integration and AUR packaging</td>
+</tr>
+</tbody>
+</table>
+<p>Keep sysfs access in <code>hwmon.py</code>; presentation code should use the domain
+objects rather than reading or writing device files directly. Tests model
+hardware with ordinary files under pytest's temporary directory and must not
+require root or physical hwmon devices.</p>
+<p>When adding UI behavior, preserve dependency injection for hardware discovery,
+stable widget object names, and independent error handling for each telemetry
+series.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../installation/" class="btn btn-neutral float-left" title="Installation"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../aur-packaging/" class="btn btn-neutral float-right" title="AUR packaging">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/rockybranches/fancontrol-ui" class="fa fa-code-fork" style="color: #fcfcfc"> rockybranches/fancontrol-ui</a>
+        </span>
+    
+    
+      <span><a href="../installation/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../aur-packaging/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

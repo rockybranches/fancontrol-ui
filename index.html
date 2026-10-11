@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="Monitor and control Linux hwmon fans with a PyQt6 desktop interface" /><link rel="canonical" href="https://rockybranches.github.io/fancontrol-ui/" />
+      <link rel="shortcut icon" href="img/favicon.ico" />
+    <title>Fan Control UI</title>
+    <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" href="css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Home";
+        var mkdocs_page_input_path = "index.md";
+        var mkdocs_page_url = "/fancontrol-ui/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/bash.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="." class="icon icon-home"> Fan Control UI
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Home</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#features">Features</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#using-the-application">Using the application</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="installation/">Installation</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="development/">Development</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="aur-packaging/">AUR packaging</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href=".">Fan Control UI</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Home</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/rockybranches/fancontrol-ui/edit/main/docs/index.md">Edit on rockybranches/fancontrol-ui</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="fan-control-ui">Fan Control UI<a class="headerlink" href="#fan-control-ui" title="Permanent link">&para;</a></h1>
+<p>Fan Control UI is a PyQt6 desktop application for monitoring and configuring
+fan endpoints exposed through Linux's <a href="https://docs.kernel.org/hwmon/hwmon-kernel-api.html"><code>hwmon</code> interface</a>.</p>
+<h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Discover fan endpoints from RPM, PWM, mode, and fan configuration files.</li>
+<li>Apply manual fan speeds and restore supported channels to automatic mode.</li>
+<li>Configure exposed RPM limits, targets, pulses per revolution, fan enablement,
+  and tachometer divisors.</li>
+<li>Monitor RPM-only channels without presenting unsupported controls.</li>
+<li>Inspect controllers, temperature sensors, and fans in an interactive topology
+  diagram.</li>
+<li>Graph up to 10 minutes of temperature, PWM, and RPM history.</li>
+<li>Report device, data, and permission errors in the interface.</li>
+</ul>
+<h2 id="using-the-application">Using the application<a class="headerlink" href="#using-the-application" title="Permanent link">&para;</a></h2>
+<p>The application scans <code>/sys/class/hwmon</code> at startup. Move a fan slider and
+release it to apply a manual speed. <strong>Automatic</strong> returns a supported channel to
+the driver's conventional automatic mode. Other settings use their adjacent
+<strong>Apply</strong> button, and <strong>Refresh</strong> performs a complete hardware rescan.</p>
+<p>The <strong>Analysis</strong> tab provides topology, capability details, current telemetry,
+and history. When a fan exposes both PWM and RPM readings, use the history
+selector to choose the series to graph.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Applying a slider value puts that fan into manual PWM mode. Firmware fan
+curves no longer control it until automatic mode is restored. Very low
+speeds can stop some fans, so monitor temperatures while choosing safe
+values.</p>
+</div>
+<p>See <a href="installation/">Installation</a> to install Fan Control UI or
+<a href="development/">Development</a> to work from a source checkout.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="installation/" class="btn btn-neutral float-right" title="Installation">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/rockybranches/fancontrol-ui" class="fa fa-code-fork" style="color: #fcfcfc"> rockybranches/fancontrol-ui</a>
+        </span>
+    
+    
+    
+      <span><a href="installation/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = ".";</script>
+    <script src="js/theme_extra.js"></script>
+    <script src="js/theme.js"></script>
+      <script src="search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
+
+<!--
+MkDocs version : 1.6.1
+Build Date UTC : 2026-10-11 12:24:09.394489+00:00
+-->

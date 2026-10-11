@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://rockybranches.github.io/fancontrol-ui/aur-packaging/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>AUR packaging - Fan Control UI</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "AUR packaging";
+        var mkdocs_page_input_path = "aur-packaging.md";
+        var mkdocs_page_url = "/fancontrol-ui/aur-packaging/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/bash.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> Fan Control UI
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../development/">Development</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">AUR packaging</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#maintainer-setup">Maintainer setup</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#release-checklist">Release checklist</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">Fan Control UI</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">AUR packaging</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/rockybranches/fancontrol-ui/edit/main/docs/aur-packaging.md">Edit on rockybranches/fancontrol-ui</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="aur-packaging">AUR packaging<a class="headerlink" href="#aur-packaging" title="Permanent link">&para;</a></h1>
+<p>Tagged releases are published to the Arch User Repository after the GitHub
+release succeeds. The <code>Publish to AUR</code> workflow:</p>
+<ol>
+<li>Verifies that the <code>v&lt;version&gt;</code> tag matches <code>pyproject.toml</code>.</li>
+<li>Downloads the immutable GitHub tag archive and calculates its SHA-256
+   checksum.</li>
+<li>Renders <code>packaging/aur/PKGBUILD.template</code>.</li>
+<li>Verifies the source and generates <code>.SRCINFO</code> with <code>makepkg</code>.</li>
+<li>Verifies the AUR SSH host fingerprint and pushes the package metadata.</li>
+</ol>
+<h2 id="maintainer-setup">Maintainer setup<a class="headerlink" href="#maintainer-setup" title="Permanent link">&para;</a></h2>
+<p>Create a dedicated SSH key for this package, add its public key to the
+maintainer's AUR account, and save the private key as the
+<code>AUR_SSH_PRIVATE_KEY</code> GitHub Actions repository secret. A dedicated key can be
+revoked without affecting unrelated repositories.</p>
+<p>The first publication creates the <code>fancontrol-ui</code> AUR repository if the package
+name is available. To retry publication without recreating a GitHub release,
+manually run the <strong>Publish to AUR</strong> workflow with an existing release tag.</p>
+<h2 id="release-checklist">Release checklist<a class="headerlink" href="#release-checklist" title="Permanent link">&para;</a></h2>
+<p>Before tagging a release:</p>
+<ol>
+<li>Keep the versions in <code>pyproject.toml</code> and
+   <code>src/fancontrol_ui/__init__.py</code> synchronized.</li>
+<li>Review runtime dependencies, build dependencies, installed assets, and
+   license metadata in <code>packaging/aur/PKGBUILD.template</code>.</li>
+<li>Confirm the source archive contains the desktop file, icon, and udev rules.</li>
+<li>Validate the rendered package on Arch Linux.</li>
+</ol>
+<p>Render the template with the intended version and archive checksum, then run:</p>
+<pre><code class="language-bash">makepkg --verifysource
+makepkg --printsrcinfo &gt; .SRCINFO
+makepkg --cleanbuild
+</code></pre>
+<p>Inspect the resulting package contents with:</p>
+<pre><code class="language-bash">tar --list --file fancontrol-ui-*.pkg.tar.zst
+</code></pre>
+<p>AUR automation does not replace the maintainer's responsibility to review the
+package and test it on Arch Linux before publication.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../development/" class="btn btn-neutral float-left" title="Development"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/rockybranches/fancontrol-ui" class="fa fa-code-fork" style="color: #fcfcfc"> rockybranches/fancontrol-ui</a>
+        </span>
+    
+    
+      <span><a href="../development/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
